@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNICORN HOUSE VOTING</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: darkred;
+    }
+
+    .post {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      border-radius: 12px;
+    }
+
+    .candidate {
+      display: flex;
+      justify-content: space-between;
+      background: #f9f9f9;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+
+    button {
+      background: green;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+<script>
+// 1. Define your election data (Change candidate strings to real names when ready!)
+const electionData = [
+  { post: "HEAD BOY", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY HEAD BOY", candidates: ["DILIP TEJ", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "HEAD GIRL", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY HEAD GIRL", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "ENVIRONMENTAL CAPTAIN", candidates: ["Candidate 1", "DILIP TEJ", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY ENVIRONMENTAL CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "CULTURAL CAPTAIN", candidates: ["DILIP TEJ", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY CULTURAL CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "SPORTS CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY SPORTS CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DISCIPLINE CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY DISCIPLINE CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  
+  // Remember to customize these two lines for each individual house file!
+  { post: "HOUSE CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] },
+  { post: "DEPUTY HOUSE CAPTAIN", candidates: ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4"] }
+];
+
+// 2. Load existing votes from browser storage, or start fresh
+let votes = JSON.parse(localStorage.getItem('schoolElectionVotes')) || {};
+
+electionData.forEach(item => {
+  if (!votes[item.post]) {
+    votes[item.post] = {};
+    item.candidates.forEach(candidate => {
+      votes[item.post][candidate] = 0;
+    });
+  }
+});
+
+// 3. Generate UI Dynamically with Images Included
+const appContainer = document.createElement('div');
+document.body.appendChild(appContainer);
+
+electionData.forEach((item, postIndex) => {
+  let postHTML = `
+    <div class="post" id="post-${postIndex}">
+      <h2 style="border-bottom: 2px solid #ccc; padding-bottom: 8px; color: #2c3e50;">${item.post}</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px;">`;
+  
+  item.candidates.forEach((candidate, candidateIndex) => {
+    // Looks inside your "images" folder for a filename matching the candidate's exact name
+    let imageSrc = `images/${candidate}.jpg`;
+
+    postHTML += `
+      <div class="candidate" style="display: flex; flex-direction: column; align-items: center; text-align: center; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
+        <img src="${imageSrc}" alt="${candidate}" 
+             onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=No+Photo';" 
+             style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px;">
+        <span style="font-weight: bold; margin-bottom: 10px; font-size: 1.05em; color: #333;">${candidate}</span>
+        <button id="btn-${postIndex}-${candidateIndex}" 
+                onclick="vote('${item.post}', '${candidate}')"
+                style="background: green; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">
+          Vote
+        </button>
+      </div>`;
+  });
+  
+  postHTML += `</div></div>`;
+  appContainer.innerHTML += postHTML;
+});
+
+// 4. Continuous Vote Function (No button lockouts)
+function vote(post, candidate) {
+  votes[post][candidate]++;
+  localStorage.setItem('schoolElectionVotes', JSON.stringify(votes));
+  alert("Vote recorded for " + candidate + " as " + post);
+}
+
+// 5. Show Results Function
+function showResults() {
+  let resultHTML = "<h2 style='text-align:center;'>📊 LIVE RESULTS</h2>";
+  let currentVotes = JSON.parse(localStorage.getItem('schoolElectionVotes')) || votes;
+
+  for (let post in currentVotes) {
+    resultHTML += `<h3>${post}</h3>`;
+    for (let candidate in currentVotes[post]) {
+      resultHTML += `${candidate}: <strong>${currentVotes[post][candidate]} votes</strong> <br>`;
+    }
+    resultHTML += "<hr>";
+  }
+  document.getElementById("results").innerHTML = resultHTML;
+}
+</script>
+ <div style="text-align:center; margin-top:30px;">
+  <button onclick="showResults()"
+  style="background:#2c3e50; color:white; padding:14px 24px; border:none; border-radius:8px; font-size:18px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    SHOW OFFICIAL RESULTS
+  </button>
+</div>
+
+<div id="results" style="background:white; max-width:1000px; margin:30px auto; padding:20px; border-radius:12px;">
+</div>
+
+</body>
+</html>
