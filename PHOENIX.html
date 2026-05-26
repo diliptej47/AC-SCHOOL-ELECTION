@@ -94,7 +94,7 @@ electionData.forEach((item, postIndex) => {
   
   item.candidates.forEach((candidate, candidateIndex) => {
     // Looks inside your "images" folder for a filename matching the candidate's exact name
-    let imageSrc = `images/${candidate}.jpg`;
+    let imageSrc = `./images/${candidate}.jpg`;
 
     postHTML += `
       <div class="candidate" style="display: flex; flex-direction: column; align-items: center; text-align: center; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0;">
